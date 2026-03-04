@@ -156,13 +156,20 @@ const displayCaughtFishArr = (array) => {
 
 //catching fish
 const catchingFish = (input, fishCaught) => {
-    //check if the water is still chummed
-    if ((chummedWater === true) && (chumLength < 3)) {
+    //check if the water is chummed
+    if ((chummedWater === true) && (chumLength < 2)) {
         //get a random time interval for smaller intervals only
         timeInterval = getRandomTime(2)
+        //increment the chumLength variable
+        chumLength += 1
+    //if the waters are not chummed or have been chummed for 3 or more turns
     } else {
         //get a random time interval for all possible intervals
         timeInterval = getRandomTime(6)
+
+        //reset the chumming values
+        chummedWater = false
+        chumLength = 0
     }
     //add time interval to time, recall time is in minutes
     time += timeInterval
@@ -175,15 +182,6 @@ const catchingFish = (input, fishCaught) => {
 
     //if we decide to keep the fish
     if (input === "k") {
-        //if the waters are chummed increment the chumLength variable
-        if((chummedWater === true) && (chumLength < 3)) {
-            chumLength += 1
-        //if the waters are not chummed or have been chummed for 3 or more turns, reset the chumming values
-        } else {
-            chummedWater = false
-            chumLength = 0
-        }
-
         //add fish weight to our total weight caught
         totalWeightCaught += fishCaught.weight
         //check that the total weight won't go over 10lbs, if it does
@@ -214,6 +212,7 @@ const catchingFish = (input, fishCaught) => {
         //if caught fish list is empty, display that instead
         if (caughtFishArr.length === 0) {
             console.log("You haven't caught any fish. Please catch at least 1 fish before trying to free any")
+            time -= timeInterval 
         } else {
             //display a list of caught fish if there is at least 1 fish in the list
             displayCaughtFishArr(caughtFishArr)
@@ -269,8 +268,14 @@ const playGame = () => {
         //display details for the caught fish
         displayCaughtFish(fishCaught)
 
+        if (chummedWater === true) {
+            //prompt player for desired action
+            console.log("Your action: [k]eep, [r]elease or [f]ree fish from previous round?")
+        } else {
+            //prompt player for desired action
+            console.log("Your action: [k]eep, [r]elease, [f]ree fish from previous round, or [c]hum water?")
+        }
         //prompt player for desired action
-        console.log("Your action: [k]eep, [r]elease, [f]ree fish from previous round, or [c]hum water?")
         let input = prompt("> ").trim()
 
         //deal with player input
